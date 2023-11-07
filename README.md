@@ -37,8 +37,8 @@ NB! Some of the requierments might require you to write code not explicitly spel
 - Implement LARGE and XL_LARGE game modes.
 - HUD update: Show time in mm:ss (minutes and secods) of play.
 - HUD update: Show the percentage of max score achived
-- If the player presses "r", restart the level.
-- If the player presses "q", exit to menu.
+# DONE - If the player presses "r", restart the level.
+# DONE - If the player presses "q", exit to menu.
 
 ### Challenge Requirements (Higher Grades):
 

@@ -40,6 +40,7 @@ namespace Greedy
         int moveCount = 0;
 
         int score = 0;
+        int maxScore = 0;
 
         public GreedyGame(GAME_SIZE size)
         {
@@ -66,6 +67,7 @@ namespace Greedy
                 for (int col = 0; col < colCount; col++)
                 {
                     gameBoard[row, col] = rnd.Next(minValue, maxValue);
+                    maxScore += gameBoard[row, col];
                 }
             }
 
@@ -81,6 +83,10 @@ namespace Greedy
             return (row: rnd.Next(0, rows + 1), column: rnd.Next(0, col + 1));
         }
 
+        private int PercentageCalculation(int score, int maxScore) {
+            return (score / maxScore) * 100;
+        }
+
         #endregion -----------------------------------------------------------------------------------------------------
 
         #region GameEngine.IScene --------------------------------------------------------------------------------------
@@ -93,6 +99,7 @@ namespace Greedy
             gameBoard = FillGameBoard(gameBoard, MIN_NUMBER, MAX_NUMBER);
             player = PickRandomStartPosition(gameBoard);
             gameBoard[player.Item1, player.Item2] = PLAYER_ID;
+            score = 0;
 
             dirty = true;
         }
@@ -118,6 +125,14 @@ namespace Greedy
                 else if (keyCode == ConsoleKey.RightArrow || keyCode == ConsoleKey.D)
                 {
                     delta_x = 1;
+                }
+                else if (keyCode == ConsoleKey.Q)
+                {
+                    Environment.Exit(0);
+                }
+                else if (keyCode == ConsoleKey.R)
+                {
+                    init();
                 }
 
                 playerMoved = delta_y != 0;
@@ -191,7 +206,6 @@ namespace Greedy
                             output = $"{output}  ";
                         }
                     }
-
                 }
                 for (int col = 0; col < rowCount; col++)
                 {
@@ -213,9 +227,9 @@ namespace Greedy
                     }
 
                 }
-
                 Console.WriteLine(output);
-
+                Console.WriteLine("OOGA BOOGA   " + maxScore);
+                Console.WriteLine($"% of max score achieved so far {PercentageCalculation(score, maxScore)}");
             }
 
         }
