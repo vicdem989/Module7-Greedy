@@ -135,6 +135,10 @@ namespace Greedy
                 player.column += delta_x;
                 moveCount = gameBoard[player.row, player.column];
                 gameBoard[player.row, player.column] = PLAYER_ID;
+                if (gameBoard[player.row, player.column] == EMPTY)
+                {
+                    Environment.Exit(0);
+                }
                 dirty = true;
             }
             else if (moveCount > 0)
@@ -147,6 +151,8 @@ namespace Greedy
                 moveCount--;
                 dirty = true;
             }
+            delta_y = 0;
+            delta_x = 0;
         }
 
         public void draw()
@@ -177,6 +183,26 @@ namespace Greedy
                             output = $"{output} \u001b[38;5;{gameBoard[row, col]}m{gameBoard[row, col]}{ANSICodes.Reset}";
                         }
                         else if (gameBoard[row, col] == PLAYER_ID)
+                        {
+                            output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
+                        }
+                        else
+                        {
+                            output = $"{output}  ";
+                        }
+                    }
+
+                }
+                for (int col = 0; col < rowCount; col++)
+                {
+                    output = $"{output}{ANSICodes.Positioning.SetCursorPos(y + col, x)}";
+                    for (int row = 0; row < colCount; row++)
+                    {
+                        if (gameBoard[col, row] != PLAYER_ID && gameBoard[col, row] != EMPTY)
+                        {
+                            output = $"{output} \u001b[38;5;{gameBoard[col, row]}m{gameBoard[col, row]}{ANSICodes.Reset}";
+                        }
+                        else if (gameBoard[col, row] == PLAYER_ID)
                         {
                             output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
                         }
