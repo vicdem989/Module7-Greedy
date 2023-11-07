@@ -36,6 +36,7 @@ namespace Greedy
         bool playerMoved = false;
         bool dirty = true;
         int delta_y;
+        int delta_x;
         int moveCount = 0;
 
         int score = 0;
@@ -110,8 +111,17 @@ namespace Greedy
                 {
                     delta_y = -1;
                 }
+                else if (keyCode == ConsoleKey.LeftArrow || keyCode == ConsoleKey.A)
+                {
+                    delta_x = -1;
+                }
+                else if (keyCode == ConsoleKey.RightArrow || keyCode == ConsoleKey.D)
+                {
+                    delta_x = 1;
+                }
 
                 playerMoved = delta_y != 0;
+                playerMoved = delta_x != 0;
             }
         }
 
@@ -122,6 +132,7 @@ namespace Greedy
                 playerMoved = false;
                 gameBoard[player.row, player.column] = EMPTY;
                 player.row += delta_y;
+                player.column += delta_x;
                 moveCount = gameBoard[player.row, player.column];
                 gameBoard[player.row, player.column] = PLAYER_ID;
                 dirty = true;
@@ -130,6 +141,7 @@ namespace Greedy
             {
                 gameBoard[player.row, player.column] = EMPTY;
                 player.row += delta_y;
+                player.column += delta_x;
                 gameBoard[player.row, player.column] = PLAYER_ID;
                 score++;
                 moveCount--;
