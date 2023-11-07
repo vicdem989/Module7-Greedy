@@ -42,6 +42,10 @@ namespace Greedy
         int score = 0;
         int maxScore = 0;
 
+
+        Timer gameTimer;
+        int gameTimerCounter = 0;
+
         public GreedyGame(GAME_SIZE size)
         {
             gameSize = size;
@@ -83,7 +87,8 @@ namespace Greedy
             return (row: rnd.Next(0, rows + 1), column: rnd.Next(0, col + 1));
         }
 
-        private int PercentageCalculation(int score, int maxScore) {
+        private int PercentageCalculation(int score, int maxScore)
+        {
             return (score / maxScore) * 100;
         }
 
@@ -95,12 +100,12 @@ namespace Greedy
 
         public void init()
         {
+            gameTimer = new Timer(1000);
             gameBoard = CreateGameBoard(gameSize);
             gameBoard = FillGameBoard(gameBoard, MIN_NUMBER, MAX_NUMBER);
             player = PickRandomStartPosition(gameBoard);
             gameBoard[player.Item1, player.Item2] = PLAYER_ID;
             score = 0;
-
             dirty = true;
         }
 
