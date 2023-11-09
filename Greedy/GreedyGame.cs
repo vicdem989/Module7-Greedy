@@ -1,6 +1,7 @@
 
 
 
+using System.Linq.Expressions;
 using Utils;
 
 namespace Greedy
@@ -83,8 +84,8 @@ namespace Greedy
         {
             int rows = gameBoard.GetLength(0);
             int col = gameBoard.GetLength(1);
-            Random rnd = new Random((int)DateTime.Now.Ticks);
-            return (row: rnd.Next(0, rows + 1), column: rnd.Next(0, col + 1));
+            Random rnd = new Random();
+            return (row: rnd.Next(rows), column: rnd.Next(col));
         }
 
         private int PercentageCalculation(int score, int maxScore)
@@ -100,7 +101,7 @@ namespace Greedy
 
         public void init()
         {
-            gameTimer = new Timer(1000);
+            //gameTimer = new Timer(1000);
             gameBoard = CreateGameBoard(gameSize);
             gameBoard = FillGameBoard(gameBoard, MIN_NUMBER, MAX_NUMBER);
             player = PickRandomStartPosition(gameBoard);
@@ -123,14 +124,14 @@ namespace Greedy
                 {
                     delta_y = -1;
                 }
-                else if (keyCode == ConsoleKey.LeftArrow || keyCode == ConsoleKey.A)
+                /*else if (keyCode == ConsoleKey.LeftArrow || keyCode == ConsoleKey.A)
                 {
                     delta_x = -1;
                 }
                 else if (keyCode == ConsoleKey.RightArrow || keyCode == ConsoleKey.D)
                 {
                     delta_x = 1;
-                }
+                }*/
                 else if (keyCode == ConsoleKey.Q)
                 {
                     Environment.Exit(0);
@@ -141,7 +142,7 @@ namespace Greedy
                 }
 
                 playerMoved = delta_y != 0;
-                playerMoved = delta_x != 0;
+                //playerMoved = delta_x != 0;
             }
         }
 
@@ -152,92 +153,72 @@ namespace Greedy
                 playerMoved = false;
                 gameBoard[player.row, player.column] = EMPTY;
                 player.row += delta_y;
-                player.column += delta_x;
+                //player.column += delta_x;
                 moveCount = gameBoard[player.row, player.column];
-                gameBoard[player.row, player.column] = PLAYER_ID;
-                if (gameBoard[player.row, player.column] == EMPTY)
-                {
+                if (moveCount < 1)
                     Environment.Exit(0);
-                }
+                gameBoard[player.row, player.column] = PLAYER_ID;
                 dirty = true;
             }
             else if (moveCount > 0)
             {
                 gameBoard[player.row, player.column] = EMPTY;
                 player.row += delta_y;
-                player.column += delta_x;
+                //player.column += delta_x;
+                if (gameBoard[player.row, player.column] == EMPTY)
+                {
+                    Environment.Exit(0);
+                }
                 gameBoard[player.row, player.column] = PLAYER_ID;
                 score++;
                 moveCount--;
                 dirty = true;
             }
-            delta_y = 0;
-            delta_x = 0;
         }
 
         public void draw()
         {
             ///TODO: Refactor this function
-            if (dirty)
+            if (!dirty)
+                return;
+
+            Console.Clear();
+            dirty = false;
+
+            int rowCount = gameBoard.GetLength(0);
+            int colCount = gameBoard.GetLength(1);
+
+            string output = "";
+
+            int x = (int)((Console.WindowWidth - gameSize.columns) * 0.5);
+            int y = (int)((Console.WindowHeight - gameSize.rows) * 0.5) + HUD_HEIGHT;
+
+            Console.Write($"{ANSICodes.Positioning.SetCursorPos((y - HUD_HEIGHT), x)}Score : {score}");
+
+            for (int row = 0; row < rowCount; row++)
             {
-                Console.Clear();
-                dirty = false;
-
-                int rowCount = gameBoard.GetLength(0);
-                int colCount = gameBoard.GetLength(1);
-
-                string output = "";
-
-                int x = (int)((Console.WindowWidth - gameSize.columns) * 0.5);
-                int y = (int)((Console.WindowHeight - gameSize.rows) * 0.5) + HUD_HEIGHT;
-
-                Console.Write($"{ANSICodes.Positioning.SetCursorPos((y - HUD_HEIGHT), x)}Score : {score}");
-
-                for (int row = 0; row < rowCount; row++)
+                output = $"{output}{ANSICodes.Positioning.SetCursorPos(y + row, x)}";
+                for (int col = 0; col < colCount; col++)
                 {
-                    output = $"{output}{ANSICodes.Positioning.SetCursorPos(y + row, x)}";
-                    for (int col = 0; col < colCount; col++)
+                    if (gameBoard[row, col] != PLAYER_ID && gameBoard[row, col] != EMPTY)
                     {
-                        if (gameBoard[row, col] != PLAYER_ID && gameBoard[row, col] != EMPTY)
-                        {
-                            output = $"{output} \u001b[38;5;{gameBoard[row, col]}m{gameBoard[row, col]}{ANSICodes.Reset}";
-                        }
-                        else if (gameBoard[row, col] == PLAYER_ID)
-                        {
-                            output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
-                        }
-                        else
-                        {
-                            output = $"{output}  ";
-                        }
+                        output = $"{output} \u001b[38;5;{gameBoard[row, col]}m{gameBoard[row, col]}{ANSICodes.Reset}";
+                    }
+                    else if (gameBoard[row, col] == PLAYER_ID)
+                    {
+                        output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
+                    }
+                    else
+                    {
+                        output = $"{output}  ";
                     }
                 }
-                for (int col = 0; col < rowCount; col++)
-                {
-                    output = $"{output}{ANSICodes.Positioning.SetCursorPos(y + col, x)}";
-                    for (int row = 0; row < colCount; row++)
-                    {
-                        if (gameBoard[col, row] != PLAYER_ID && gameBoard[col, row] != EMPTY)
-                        {
-                            output = $"{output} \u001b[38;5;{gameBoard[col, row]}m{gameBoard[col, row]}{ANSICodes.Reset}";
-                        }
-                        else if (gameBoard[col, row] == PLAYER_ID)
-                        {
-                            output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
-                        }
-                        else
-                        {
-                            output = $"{output}  ";
-                        }
-                    }
-
-                }
-                Console.WriteLine(output);
-                Console.WriteLine("OOGA BOOGA   " + maxScore);
-                Console.WriteLine($"% of max score achieved so far {PercentageCalculation(score, maxScore)}");
             }
-
+            Console.WriteLine(output);
+            Output.Write(Output.Align($"\n% of max score achieved so far {PercentageCalculation(score, maxScore)}", Alignment.CENTER), true);
         }
+
+
 
         #endregion ---------------------------------------------------------------------------------------------------------
 
