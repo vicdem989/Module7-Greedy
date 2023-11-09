@@ -28,15 +28,15 @@ NB! Some of the requierments might require you to write code not explicitly spel
 
 
 - Multilingual Support: Extend your program to support multiple languages.
-- There is a bug in the code that places the player on the board. Find and fix. 
+# DONE - There is a bug in the code that places the player on the board. Find and fix. 
 - Create a gameover screen that summarizes the players achivment (this new screen should redirect to the menu in some whay when the player presses anny key)
-- Currently the player can backtrack, i.e. go where they have been befor, this is not allowed. If this happens the game is over. 
+# DONE - Currently the player can backtrack, i.e. go where they have been befor, this is not allowed. If this happens the game is over. 
 - Currently the game only suports vertical movment, add the code that is required for hotisontal movment.
 - Currently the player can atampt to go outside the bounds of the game board, if this happens the game crashes. Make it so that it is simply game over. NB! being next to a boarder for instance the left edge and selecting left should do nothing. i.e. there needs to be a number to the left in order to go left and fail. 
 - The greedy games Update function has a bit of duplication, refactor the code to avoid as much of this duplication as possible.
 - Implement LARGE and XL_LARGE game modes.
 - HUD update: Show time in mm:ss (minutes and secods) of play.
-- HUD update: Show the percentage of max score achived
+# DONE - HUD update: Show the percentage of max score achived
 # DONE - If the player presses "r", restart the level.
 # DONE - If the player presses "q", exit to menu.
 

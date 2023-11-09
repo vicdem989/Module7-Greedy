@@ -42,6 +42,7 @@ namespace Greedy
 
         int score = 0;
         int maxScore = 0;
+        double percentageMaxScoreGotten = 0;
 
 
         Timer gameTimer;
@@ -88,9 +89,9 @@ namespace Greedy
             return (row: rnd.Next(rows), column: rnd.Next(col));
         }
 
-        private int PercentageCalculation(int score, int maxScore)
+        private double PercentageCalculation(int score, int maxScore)
         {
-            return (score / maxScore) * 100;
+            return ((double)score / maxScore) * 100.0;
         }
 
         #endregion -----------------------------------------------------------------------------------------------------
@@ -134,11 +135,11 @@ namespace Greedy
                 }*/
                 else if (keyCode == ConsoleKey.Q)
                 {
-                    Environment.Exit(0);
+                    OnExitScreen(null,null); 
                 }
                 else if (keyCode == ConsoleKey.R)
                 {
-                    init();
+                    OnExitScreen(typeof(GreedyGame), new object[] { GAME_SIZE.SMALL });
                 }
 
                 playerMoved = delta_y != 0;
@@ -165,7 +166,7 @@ namespace Greedy
                 gameBoard[player.row, player.column] = EMPTY;
                 player.row += delta_y;
                 //player.column += delta_x;
-                if (gameBoard[player.row, player.column] == EMPTY)
+                if (gameBoard[player.row, player.column] < 1)
                 {
                     Environment.Exit(0);
                 }
@@ -174,6 +175,7 @@ namespace Greedy
                 moveCount--;
                 dirty = true;
             }
+            percentageMaxScoreGotten = PercentageCalculation(score, maxScore);
         }
 
         public void draw()
@@ -215,7 +217,7 @@ namespace Greedy
                 }
             }
             Console.WriteLine(output);
-            Output.Write(Output.Align($"\n% of max score achieved so far {PercentageCalculation(score, maxScore)}", Alignment.CENTER), true);
+            Output.Write(Output.Align($"\n{(int)percentageMaxScoreGotten} % of max score achieved so far ", Alignment.CENTER), true);
         }
 
 
