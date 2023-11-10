@@ -2,6 +2,7 @@
 
 
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using Utils;
 
 namespace Greedy
@@ -43,6 +44,8 @@ namespace Greedy
         int score = 0;
         int maxScore = 0;
         double percentageMaxScoreGotten = 0;
+
+        bool isPlaying = true;
 
 
         Timer gameTimer;
@@ -94,6 +97,45 @@ namespace Greedy
             return ((double)score / maxScore) * 100.0;
         }
 
+        private void GameOver(bool playStatus)
+        {
+            isPlaying = playStatus;
+            Console.Clear();
+            Output.Write(Output.Align("Game is over!", Alignment.CENTER), true);
+            Output.Write(Output.Align($"You got {ANSICodes.Colors.Green}{score} out of {maxScore}{ANSICodes.Reset}", Alignment.CENTER), true);
+            Output.Write(Output.Align($"Meaning you got {ANSICodes.Colors.Cyan}{(PercentageCalculation(score, maxScore)).ToString("0.00")}% of {maxScore}!{ANSICodes.Reset}", Alignment.CENTER), true);
+            Output.Write(Output.Align("Do you want to play again? y/n", Alignment.CENTER), true);
+            string input = Console.ReadLine().ToLower();
+            while (input == string.Empty && input != "y" && input != "n")
+            {
+                Output.Write(Output.Align("Input either y (yes) or n (no)", Alignment.CENTER), true);
+                input = Console.ReadLine().ToLower();
+            }
+
+            if (input == "n")
+            {
+                Output.Write(Output.Align("Thanks for playing"));
+                OnExitScreen(null, null);
+            }
+            else
+            {
+                OnExitScreen(typeof(GreedyGame), new object[] { GAME_SIZE.SMALL });
+            }
+
+        }
+
+        private void DoMoves()
+        {
+            gameBoard[player.row, player.column] = EMPTY;
+            player.row += delta_y;
+            //player.column += delta_x;
+            if (gameBoard[player.row, player.column] < 1)
+                GameOver(false);
+            gameBoard[player.row, player.column] = PLAYER_ID;
+            score++;
+            moveCount--;
+        }
+
         #endregion -----------------------------------------------------------------------------------------------------
 
         #region GameEngine.IScene --------------------------------------------------------------------------------------
@@ -109,6 +151,7 @@ namespace Greedy
             gameBoard[player.Item1, player.Item2] = PLAYER_ID;
             score = 0;
             dirty = true;
+            isPlaying = true;
         }
 
         public void input()
@@ -135,7 +178,7 @@ namespace Greedy
                 }*/
                 else if (keyCode == ConsoleKey.Q)
                 {
-                    OnExitScreen(null,null); 
+                    OnExitScreen(null, null);
                 }
                 else if (keyCode == ConsoleKey.R)
                 {
@@ -149,6 +192,8 @@ namespace Greedy
 
         public void update()
         {
+            /*if (!playerMoved)
+                return;*/
             if (playerMoved)
             {
                 playerMoved = false;
@@ -157,24 +202,14 @@ namespace Greedy
                 //player.column += delta_x;
                 moveCount = gameBoard[player.row, player.column];
                 if (moveCount < 1)
-                    Environment.Exit(0);
+                    GameOver(false);
                 gameBoard[player.row, player.column] = PLAYER_ID;
-                dirty = true;
             }
             else if (moveCount > 0)
             {
-                gameBoard[player.row, player.column] = EMPTY;
-                player.row += delta_y;
-                //player.column += delta_x;
-                if (gameBoard[player.row, player.column] < 1)
-                {
-                    Environment.Exit(0);
-                }
-                gameBoard[player.row, player.column] = PLAYER_ID;
-                score++;
-                moveCount--;
-                dirty = true;
+                DoMoves();
             }
+            dirty = true;
             percentageMaxScoreGotten = PercentageCalculation(score, maxScore);
         }
 
