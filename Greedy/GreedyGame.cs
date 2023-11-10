@@ -17,8 +17,8 @@ namespace Greedy
         public int columns = 0;
 
         public static GAME_SIZE SMALL { get { return new GAME_SIZE() { rows = MIN_ROWS, columns = MIN_COLUMNS }; } }
-        public static GAME_SIZE LARGE { get { throw new NotImplementedException("You must implement Large, it should use as close to  3/4 of the screen"); } }
-        public static GAME_SIZE XTRA_LARGE { get { throw new NotImplementedException("You must implement Large,it should use as close to 100% of the screen as we can get"); } }
+        public static GAME_SIZE LARGE { get { return new GAME_SIZE() { rows = 10, columns = 30 }; } }//throw new NotImplementedException("You must implement Large, it should use as close to  3/4 of the screen"); } }
+        public static GAME_SIZE XTRA_LARGE { get { return new GAME_SIZE() { rows = Console.WindowWidth, columns = Console.WindowHeight }; } } 
     }
 
 
@@ -128,13 +128,29 @@ namespace Greedy
         {
             gameBoard[player.row, player.column] = EMPTY;
             player.row += delta_y;
-            //player.column += delta_x;
+            player.column += delta_x;
             if (gameBoard[player.row, player.column] < 1)
                 GameOver(false);
             gameBoard[player.row, player.column] = PLAYER_ID;
             score++;
             moveCount--;
+            dirty = true;
         }
+
+        private void SetUpMoves()
+        {
+            playerMoved = false;
+            gameBoard[player.row, player.column] = EMPTY;
+            player.row += delta_y;
+            player.column += delta_x;
+            moveCount = gameBoard[player.row, player.column];
+            if (moveCount < 1)
+                GameOver(false);
+            gameBoard[player.row, player.column] = PLAYER_ID;
+            dirty = true;
+        }
+
+
 
         #endregion -----------------------------------------------------------------------------------------------------
 
@@ -162,20 +178,23 @@ namespace Greedy
                 if (keyCode == ConsoleKey.DownArrow || keyCode == ConsoleKey.W)
                 {
                     delta_y = 1;
-
+                    delta_x = 0;
                 }
                 else if (keyCode == ConsoleKey.UpArrow || keyCode == ConsoleKey.S)
                 {
                     delta_y = -1;
+                    delta_x = 0;
                 }
-                /*else if (keyCode == ConsoleKey.LeftArrow || keyCode == ConsoleKey.A)
+                else if (keyCode == ConsoleKey.LeftArrow || keyCode == ConsoleKey.A)
                 {
                     delta_x = -1;
+                    delta_y = 0;
                 }
                 else if (keyCode == ConsoleKey.RightArrow || keyCode == ConsoleKey.D)
                 {
                     delta_x = 1;
-                }*/
+                    delta_y = 0;
+                }
                 else if (keyCode == ConsoleKey.Q)
                 {
                     OnExitScreen(null, null);
@@ -185,31 +204,23 @@ namespace Greedy
                     OnExitScreen(typeof(GreedyGame), new object[] { GAME_SIZE.SMALL });
                 }
 
-                playerMoved = delta_y != 0;
-                //playerMoved = delta_x != 0;
+                if (delta_y != 0 || delta_x != 0)
+                    playerMoved = true;
             }
         }
 
         public void update()
         {
-            /*if (!playerMoved)
-                return;*/
             if (playerMoved)
             {
-                playerMoved = false;
-                gameBoard[player.row, player.column] = EMPTY;
-                player.row += delta_y;
-                //player.column += delta_x;
-                moveCount = gameBoard[player.row, player.column];
-                if (moveCount < 1)
-                    GameOver(false);
-                gameBoard[player.row, player.column] = PLAYER_ID;
+                SetUpMoves();
             }
             else if (moveCount > 0)
             {
                 DoMoves();
             }
-            dirty = true;
+            //delta_x = 0;
+            //delta_y = 0;
             percentageMaxScoreGotten = PercentageCalculation(score, maxScore);
         }
 
@@ -251,6 +262,26 @@ namespace Greedy
                     }
                 }
             }
+
+           /* for (int col = 0; col < colCount; col++)
+            {
+                output = $"{output}{ANSICodes.Positioning.SetCursorPos(x + col, y)}";
+                for (int row = 0; row < rowCount; row++)
+                {
+                    if (gameBoard[row, col] != PLAYER_ID && gameBoard[row, col] != EMPTY)
+                    {
+                        output = $"{output} \u001b[38;5;{gameBoard[row, col]}m{gameBoard[row, col]}{ANSICodes.Reset}";
+                    }
+                    else if (gameBoard[row, col] == PLAYER_ID)
+                    {
+                        output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
+                    }
+                    else
+                    {
+                        output = $"{output}  ";
+                    }
+                }
+            }*/
             Console.WriteLine(output);
             Output.Write(Output.Align($"\n{(int)percentageMaxScoreGotten} % of max score achieved so far ", Alignment.CENTER), true);
         }

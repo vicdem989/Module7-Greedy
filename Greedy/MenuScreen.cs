@@ -38,8 +38,8 @@ namespace Greedy
                     itemsDescription = new string[] { "Small Game", "Large Game", "XL Game", "Back" },
                     itemsAction = new Action[]{
                         ()=>{ OnExitScreen(typeof(GreedyGame),new object[]{GAME_SIZE.SMALL}); },
-                        ()=>{ },
-                        ()=>{ },
+                        ()=>{ OnExitScreen(typeof(GreedyGame),new object[]{GAME_SIZE.LARGE}); },
+                        ()=>{ OnExitScreen(typeof(GreedyGame),new object[]{GAME_SIZE.XTRA_LARGE}); },
                         ()=>{SwapMenu(TOC_INDEXES.RootMenu); }
                      }
                 };
