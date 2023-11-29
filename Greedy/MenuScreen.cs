@@ -1,3 +1,4 @@
+using LANGUAGE;
 using Utils;
 using static Utils.Output;
 
@@ -49,11 +50,9 @@ namespace Greedy
             {
                 output = new Menu()
                 {
-                    itemsDescription = new string[] { "Language", "Dificulty", "Credits", "Back" },
+                    itemsDescription = new string[] { "Language","Back" },
                     itemsAction = new Action[]{
-                        ()=>{ },
-                        ()=>{ },
-                        ()=>{ },
+                        ()=>{ OnExitScreen(typeof(LanguageSettings), null);},
                         ()=>{SwapMenu(TOC_INDEXES.RootMenu); }
                      }
                 };

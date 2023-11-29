@@ -18,7 +18,7 @@ namespace Greedy
 
         public static GAME_SIZE SMALL { get { return new GAME_SIZE() { rows = MIN_ROWS, columns = MIN_COLUMNS }; } }
         public static GAME_SIZE LARGE { get { return new GAME_SIZE() { rows = 10, columns = 30 }; } }//throw new NotImplementedException("You must implement Large, it should use as close to  3/4 of the screen"); } }
-        public static GAME_SIZE XTRA_LARGE { get { return new GAME_SIZE() { rows = Console.WindowWidth, columns = Console.WindowHeight }; } } 
+        public static GAME_SIZE XTRA_LARGE { get { return new GAME_SIZE() { rows = Console.WindowWidth, columns = Console.WindowHeight }; } }
     }
 
 
@@ -129,7 +129,7 @@ namespace Greedy
             gameBoard[player.row, player.column] = EMPTY;
             player.row += delta_y;
             player.column += delta_x;
-            if (gameBoard[player.row, player.column] < 1)
+            if (gameBoard[player.row, player.column] < 1 || gameBoard[player.row, player.column] == EMPTY)
                 GameOver(false);
             gameBoard[player.row, player.column] = PLAYER_ID;
             score++;
@@ -143,12 +143,43 @@ namespace Greedy
             gameBoard[player.row, player.column] = EMPTY;
             player.row += delta_y;
             player.column += delta_x;
+            if(gameBoard[player.row += delta_y, player.column += delta_x] == EMPTY) {
+                GameOver(false);
+            }
             moveCount = gameBoard[player.row, player.column];
             if (moveCount < 1)
                 GameOver(false);
             gameBoard[player.row, player.column] = PLAYER_ID;
             dirty = true;
         }
+
+
+        private string drawBoard(int rowCount, int colCount, string output, int y, int x)
+        {
+            for (int row = 0; row < rowCount; row++)
+            {
+                output = $"{output}{ANSICodes.Positioning.SetCursorPos(y + row, x)}";
+                for (int col = 0; col < colCount; col++)
+                {
+                    if (gameBoard[row, col] != PLAYER_ID && gameBoard[row, col] != EMPTY)
+                    {
+                        output = $"{output} \u001b[38;5;{gameBoard[row, col]}m{gameBoard[row, col]}{ANSICodes.Reset}";
+                    }
+                    else if (gameBoard[row, col] == PLAYER_ID)
+                    {
+                        output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
+                    }
+                    else
+                    {
+                        output = $"{output}  ";
+                    }
+                }
+
+            }
+            return output;
+        }
+
+
 
 
 
@@ -219,14 +250,11 @@ namespace Greedy
             {
                 DoMoves();
             }
-            //delta_x = 0;
-            //delta_y = 0;
             percentageMaxScoreGotten = PercentageCalculation(score, maxScore);
         }
 
         public void draw()
         {
-            ///TODO: Refactor this function
             if (!dirty)
                 return;
 
@@ -243,54 +271,13 @@ namespace Greedy
 
             Console.Write($"{ANSICodes.Positioning.SetCursorPos((y - HUD_HEIGHT), x)}Score : {score}");
 
-            for (int row = 0; row < rowCount; row++)
-            {
-                output = $"{output}{ANSICodes.Positioning.SetCursorPos(y + row, x)}";
-                for (int col = 0; col < colCount; col++)
-                {
-                    if (gameBoard[row, col] != PLAYER_ID && gameBoard[row, col] != EMPTY)
-                    {
-                        output = $"{output} \u001b[38;5;{gameBoard[row, col]}m{gameBoard[row, col]}{ANSICodes.Reset}";
-                    }
-                    else if (gameBoard[row, col] == PLAYER_ID)
-                    {
-                        output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
-                    }
-                    else
-                    {
-                        output = $"{output}  ";
-                    }
-                }
-            }
+            Output.Write(drawBoard(rowCount, colCount, output, y, x));
 
-           /* for (int col = 0; col < colCount; col++)
-            {
-                output = $"{output}{ANSICodes.Positioning.SetCursorPos(x + col, y)}";
-                for (int row = 0; row < rowCount; row++)
-                {
-                    if (gameBoard[row, col] != PLAYER_ID && gameBoard[row, col] != EMPTY)
-                    {
-                        output = $"{output} \u001b[38;5;{gameBoard[row, col]}m{gameBoard[row, col]}{ANSICodes.Reset}";
-                    }
-                    else if (gameBoard[row, col] == PLAYER_ID)
-                    {
-                        output = $"{output} {ANSICodes.BgColors.Blue}{PLAYER_TOKEN}{ANSICodes.Reset}";
-                    }
-                    else
-                    {
-                        output = $"{output}  ";
-                    }
-                }
-            }*/
-            Console.WriteLine(output);
             Output.Write(Output.Align($"\n{(int)percentageMaxScoreGotten} % of max score achieved so far ", Alignment.CENTER), true);
         }
 
 
 
         #endregion ---------------------------------------------------------------------------------------------------------
-
-
-
     }
 }
