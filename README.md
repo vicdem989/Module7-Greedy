@@ -1,30 +1,9 @@
-# GREED
+Implementing LARGE and XL_LARGE was something I for some reason did not manage to get done. I am close with LARGE, with a small bug. But I do think I was on the right way. Also, I did Console.WindowWidth / 100 * 75 because I could not get the float to work. I would prefer to have done Console.WindowWidth * 0.75. Large is just large, kinda large tbh.
 
-Welcome to your seventh project, "Greed". Inspired by Matt Day's Linux game, this graphical, grid-based game will test your programming skills on a new plane, incorporating graphical elements and sophisticated algorithms, while still firmly grounded in our foundational concepts.
+Multilingual support utilizes a config file where the language is saved locally. Meaning, if the player chooses english as language. The language will stay english until it is changed to norwegian. Pretty neat if u ask me
 
-**Variables:** Variables in "Greed" become increasingly complex as they now represent not just simple game data, but also the game grid's state, the player's position, and the score. This experience will enhance your skills in managing more intricate data structures.
+Using timer is not something new to me. But in c#, it was a different beast. A timer is usually an easy task. I got to show the time of day, with the increments by 10 minutes. However, I wanted it to show the seconds that the player has played the current game. Something I was not allowed to in the TimerCallback().
 
-**Conditionals:** Conditionals play a vital role in determining the game's flow, such as checking for valid moves, updating the grid based on the player's move, and identifying when the game ends (when no moves are left).
-
-**Arrays:** Arrays, or more specifically two-dimensional arrays, represent the game grid. Each element corresponds to a cell in the grid, storing its current state. This representation will necessitate more advanced array manipulation skills.
-
-**Loops:** Loops are key for iterating over the grid, to check for possible moves, and to update the grid after each move. Nested loops will likely become a common tool, given the two-dimensional nature of the game.
-
-**Functions:** Functions in "Greed" encapsulate tasks like generating the game grid, validating moves, calculating scores, and rendering the grid to the player. You'll find the creation of modular, efficient, and reusable functions even more critical with the increased complexity.
-
-In keeping with previous projects, we continue to emphasize decoupling game state from visual representation. While "Greed" introduces graphical elements, the principle remains the same—your core game logic should function independently from its graphical display.
-
-So, what's unique in "Greed"? As a grid-based game, it introduces you to spatial and graphical considerations. You'll need to develop algorithms that can traverse and manipulate a two-dimensional grid effectively. These could include pathfinding algorithms, or others that can efficiently search a grid and update its state.
-
-"Greed" also adds the task of rendering a graphical grid to the player, introducing you to basic computer graphics concepts within the CLI context. This aspect will demand that you find creative ways to visualize the game grid using text-based graphics.
-
-## Project Requirements:
-
-You must work from the code in https://github.com/CodeCraftCurriculum-I/module_7_greedy
-
-Before you write any code, you should "sketch" the pseudo code and make a flowchart for how you plan to do the following alterations to the game.
-
-NB! Some of the requierments might require you to write code not explicitly spelled out in the requierments, use your judgment.
 
 
 - Multilingual Support: Extend your program to support multiple languages.

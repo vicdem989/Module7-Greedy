@@ -1,9 +1,9 @@
 
 
-
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using Utils;
+using System.Timers;
+using LANGUAGE;
+
 
 namespace Greedy
 {
@@ -13,12 +13,16 @@ namespace Greedy
     {
         const int MIN_ROWS = 10;
         const int MIN_COLUMNS = 10;
+
+        static int largeRows = Console.WindowWidth / 100 * 75;
+        static int largeCol = Console.WindowHeight / 100 * 75; 
+
         public int rows = 0;
         public int columns = 0;
 
         public static GAME_SIZE SMALL { get { return new GAME_SIZE() { rows = MIN_ROWS, columns = MIN_COLUMNS }; } }
-        public static GAME_SIZE LARGE { get { return new GAME_SIZE() { rows = 10, columns = 30 }; } }//throw new NotImplementedException("You must implement Large, it should use as close to  3/4 of the screen"); } }
-        public static GAME_SIZE XTRA_LARGE { get { return new GAME_SIZE() { rows = Console.WindowWidth, columns = Console.WindowHeight }; } }
+        public static GAME_SIZE LARGE { get { return new GAME_SIZE() { rows = largeRows, columns = largeCol }; } }
+        public static GAME_SIZE XTRA_LARGE { get { return new GAME_SIZE() { rows = Console.WindowWidth, columns = Console.WindowHeight}; } }
     }
 
 
@@ -47,9 +51,6 @@ namespace Greedy
 
         bool isPlaying = true;
 
-
-        Timer gameTimer;
-        int gameTimerCounter = 0;
 
         public GreedyGame(GAME_SIZE size)
         {
@@ -101,20 +102,20 @@ namespace Greedy
         {
             isPlaying = playStatus;
             Console.Clear();
-            Output.Write(Output.Align("Game is over!", Alignment.CENTER), true);
-            Output.Write(Output.Align($"You got {ANSICodes.Colors.Green}{score} out of {maxScore}{ANSICodes.Reset}", Alignment.CENTER), true);
-            Output.Write(Output.Align($"Meaning you got {ANSICodes.Colors.Cyan}{(PercentageCalculation(score, maxScore)).ToString("0.00")}% of {maxScore}!{ANSICodes.Reset}", Alignment.CENTER), true);
-            Output.Write(Output.Align("Do you want to play again? y/n", Alignment.CENTER), true);
+            Output.Write(Output.Align(Language.appText.GameOver, Alignment.CENTER), true);
+            Output.Write(Output.Align($"{Language.appText.YouGot} {ANSICodes.Colors.Green}{score} {Language.appText.OutOf} {maxScore}{ANSICodes.Reset}", Alignment.CENTER), true);
+            Output.Write(Output.Align($"{Language.appText.MeaningYouGot} {ANSICodes.Colors.Cyan}{(PercentageCalculation(score, maxScore)).ToString("0.00")}% {Language.appText.Of} {maxScore}!{ANSICodes.Reset}", Alignment.CENTER), true);
+            Output.Write(Output.Align(Language.appText.PlayAgain, Alignment.CENTER), true);
             string input = Console.ReadLine().ToLower();
-            while (input == string.Empty && input != "y" && input != "n")
+            while (input == string.Empty && input != "y" && input != "n" && input != "j")
             {
-                Output.Write(Output.Align("Input either y (yes) or n (no)", Alignment.CENTER), true);
+                Output.Write(Output.Align(Language.appText.InvalidInput, Alignment.CENTER), true);
                 input = Console.ReadLine().ToLower();
             }
 
             if (input == "n")
             {
-                Output.Write(Output.Align("Thanks for playing"));
+                Output.Write(Output.Align(Language.appText.ThanksForPlaying));
                 OnExitScreen(null, null);
             }
             else
@@ -143,7 +144,8 @@ namespace Greedy
             gameBoard[player.row, player.column] = EMPTY;
             player.row += delta_y;
             player.column += delta_x;
-            if(gameBoard[player.row += delta_y, player.column += delta_x] == EMPTY) {
+            if (gameBoard[player.row += delta_y, player.column += delta_x] == EMPTY)
+            {
                 GameOver(false);
             }
             moveCount = gameBoard[player.row, player.column];
@@ -191,7 +193,6 @@ namespace Greedy
 
         public void init()
         {
-            //gameTimer = new Timer(1000);
             gameBoard = CreateGameBoard(gameSize);
             gameBoard = FillGameBoard(gameBoard, MIN_NUMBER, MAX_NUMBER);
             player = PickRandomStartPosition(gameBoard);
@@ -269,11 +270,11 @@ namespace Greedy
             int x = (int)((Console.WindowWidth - gameSize.columns) * 0.5);
             int y = (int)((Console.WindowHeight - gameSize.rows) * 0.5) + HUD_HEIGHT;
 
-            Console.Write($"{ANSICodes.Positioning.SetCursorPos((y - HUD_HEIGHT), x)}Score : {score}");
+            Console.Write($"{ANSICodes.Positioning.SetCursorPos((y - HUD_HEIGHT), x)}{Language.appText.Score}{score}");
 
             Output.Write(drawBoard(rowCount, colCount, output, y, x));
 
-            Output.Write(Output.Align($"\n{(int)percentageMaxScoreGotten} % of max score achieved so far ", Alignment.CENTER), true);
+            Output.Write(Output.Align($"\n{(int)percentageMaxScoreGotten} {Language.appText.PercentageMaxScore} ", Alignment.CENTER), true);
         }
 
 

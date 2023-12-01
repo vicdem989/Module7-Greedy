@@ -36,7 +36,7 @@ namespace Greedy
             {
                 output = new Menu()
                 {
-                    itemsDescription = new string[] { "Small Game", "Large Game", "XL Game", "Back" },
+                    itemsDescription = new string[] { Language.appText.SmallGame, Language.appText.LargeGame, Language.appText.XLGame, Language.appText.Back },
                     itemsAction = new Action[]{
                         ()=>{ OnExitScreen(typeof(GreedyGame),new object[]{GAME_SIZE.SMALL}); },
                         ()=>{ OnExitScreen(typeof(GreedyGame),new object[]{GAME_SIZE.LARGE}); },
@@ -50,7 +50,7 @@ namespace Greedy
             {
                 output = new Menu()
                 {
-                    itemsDescription = new string[] { "Language","Back" },
+                    itemsDescription = new string[] { Language.appText.Language,Language.appText.Back },
                     itemsAction = new Action[]{
                         ()=>{ OnExitScreen(typeof(LanguageSettings), null);},
                         ()=>{SwapMenu(TOC_INDEXES.RootMenu); }
@@ -61,7 +61,7 @@ namespace Greedy
             {
                 output = new Menu()
                 {
-                    itemsDescription = new string[] { "Start New Game", "Settings", "Quit" },
+                    itemsDescription = new string[] { Language.appText.NewGame, Language.appText.Settings, Language.appText.Quit },
                     itemsAction = new Action[]{
                         ()=>{ SwapMenu(TOC_INDEXES.StartGameMenu); },
                         ()=>{ SwapMenu(TOC_INDEXES.SettingsMenu); },

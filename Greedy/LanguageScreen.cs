@@ -15,18 +15,26 @@ namespace Greedy
 
         public static void CreateSettings()
         {
-            Output.Write("Do you want english or norwegian?", true);
+            Output.Write(Language.appText.WhatLanguage, true);
             string input = Console.ReadLine().ToLower();
-            //int choice = 1;//MainMenu.MultipleChoice(true, Language.appText.English, Language.appText.Norwegian);
-            if (input == "en" || input == "english")
+
+            while (input != "en" && input != "english" && input != "no" && input != "norwegian")
+            {
+                Console.Clear();
+                Output.Write(Language.appText.InvalidInput, true);
+                input = Console.ReadLine().ToLower();
+            }
+
+            if (input == "en" || input == "english" || input == "engelsk")
             {
                 Language.currentLanguage = "en";
             }
-            else if (input == "no" || input == "norwegian")
+            else if (input == "no" || input == "norwegian" || input == "norsk")
             {
                 Language.currentLanguage = "no";
 
             }
+   
             OutputToFIle(ChangeLanguage());
         }
 
@@ -96,10 +104,9 @@ namespace Greedy
             Console.Clear();
             CreateSettings();
             string outputGraphics = "";
+            CheckConfig();
             OnExitScreen(typeof(MenuScreen), new object[] { outputGraphics });
         }
-
-
 
         #endregion
 
